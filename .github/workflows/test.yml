@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         node-version: [18.x]
@@ -13,41 +14,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Cache npm modules and build artifacts
+      - name: Cache npm modules
         uses: actions/cache@v3
         with:
-          path: |
-            ~/.npm
-            ./dist
-            ./node_modules
-          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json', '**/*.ts', '**/*.html', '**/*.scss') }}
-          restore-keys: |
-            ${{ runner.os }}-build-
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install dependencies
         run: npm install
 
-      - name: Install Chrome dependencies
-        run: sudo apt-get install -y libnss3 fonts-liberation libfontconfig1 xorg xvfb gtk2-engines-pixbuf x11-apps
+      - name: Setup Headless Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libxss1 libappindicator1 libindicator7
 
       - name: Start Xvfb
         run: |
-          export DISPLAY=':99.0'
-          Xvfb :99 -screen 0 1024x768x24 &
+          Xvfb :99 -ac -screen 0 1280x1024x24 > /dev/null 2>&1 &
 
       - name: Run tests
         run: |
-          export DISPLAY=':99.0'
-          ng test --karma-config karma.conf.js --watch=false --browsers=ChromeHeadlessNoSandbox
-
-      - name: Check system performance
-        run: |
-          uptime
-          free -h
-          df -h
-          top -b -n 1
+          export DISPLAY=:99
+          npm test
