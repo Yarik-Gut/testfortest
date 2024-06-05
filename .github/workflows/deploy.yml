@@ -1,0 +1,94 @@
+
+name: Auto Deploy
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Copy deploy script to server
+      uses: appleboy/scp-action@v0.1.0
+      with:
+        host: 95.217.209.152
+        username: root
+        key: |
+          -----BEGIN RSA PRIVATE KEY-----
+          MIIEowIBAAKCAQEAuJbmj1F9IXmXXd8XFzZ94y60JcvNzsrWDmI8J2zUC/9SScRR
+          cOLxYUB98xFK/jkpguXrn+2hnhqUWCkz+FuIdDAK6OVbRfJGmbsC/7CaqM3TVUxo
+          /OsKmvw4fn7oBd3GIwYmrz2M25CNMvqzphcyRKEoQUocfmSscVId1I/wgCQ+MlBV
+          9ab3OUAv6NW8OGXUOQ9BaB8DHlzuBFOqhG8GlQC4AEQZzLeoXCUq8m0s7fhab8Hh
+          PAIgDBSZpnqVQdC5riVVhAW/W5wql5rwSuqGYcwUst5NXWWkW+rwDdSQxPo6D7EK
+          o7XiMWtMLbZCkmq8g57YTtchuIR9Gs9ixWz19wIDAQABAoIBAHSWy1WmkLR+Cj8+
+          U2VUA7tkmmBtE7cTopQ/M+Nq95wETkNNfmsgzHkytNq8B3P/QtrswiCnhTdJbn0o
+          uSybE9rfJWToyPerCTC8UC6Tq3wHVP5BXuawxmgR+tTa704VP7qLfg+dfsSHzsdu
+          Vd4INLXoXHawisLCb7C7vx+tMqicJ7i2zRhkG0E0z7tnSVzXkmu4npNYWfSoQ6LR
+          qdeeh0sdZbcUVW7x/81IFzMuIkmh3Qzk7Zxfv7FSFhmdSix4VzZdUIhU8DlngAA/
+          lECrLbhqWrBv83wA+KHqUr6wue5s9a1M10vbZDnDkDYUJH25HN/Ja7EYg2QfnoFh
+          Lo+ICtECgYEA8EbWW+lTuhz5Ntx15+Cr6RlsAzuan9MkIObSKwa1bCM3CiE+zg+F
+          CY0qaX12/N/TwmHlo/C/GANaGjHNzV/54+IXHBKYR0XR9e3QrXsh8Ix7XyVinPpW
+          iNvRb5WFVQaoL1DhoSN5vWzzplRmyryuPmr74tlpsoMckVaGYSUXAosCgYEAxKst
+          8i++C/XlYEc4LqjvWC9W/ItkwJ+morhejTmei/mbXV8Dop96iockMEyq82MUXJeK
+          BRswDphrfRhbXqYRvO5gSWnfmzLL9z2Z/oiXZ2pGI6f2Cwbe1wIRCZLLcD4S4rFv
+          qRKt0E4fZUXYgAYjb4H3+Uo1iUDwnl47IPb9I8UCgYB9CN/TxH/Fgf5OBjt1Bv1u
+          t8P1irbUJNPQK02DBmKye0DRDKvaH0ljxwojCx84SGGx7a/KuCU5IcVpjDFEhoVL
+          iQPtn9+Od07jY3YMUN9AhlpNEO9YMQ2G+pzqLCzOKkCrHrPLXuKjKGdCTvmO1tD1
+          ukaJrgnK01+yYgxb0SlAMQKBgBoeofuIW7U68zvWOZ/4z9DmeKcR3E+45Gi4E9at
+          0GDGxdugwtrWU3ASgrvncszgW9PwTGRhOAC4PY5frcLkS3bMMf2OEiSKmow7ojgr
+          6+/QLYCOzh6oyu/DVn/u/xXpKJjy9+F8mZkQxxqsLBTUu+ATYtu4/2M7PLnLyg6W
+          vwgBAoGBALB5CN/eUHdrS0VybLQY/8SeYLaZDkZ5w8rtwcfF7PtK7oSfvy19xpaO
+          WgaD43fmBfZqfuQrboYs9Yc7ETaZ+mat1Z5Jk1S7EbooApAanpGWgGvEJ3vp2HWw
+          DQfsjvwm09m93cSYipDHbo/IdctHKc+Ta4sA+1rdZCd65Q1IEXma
+          -----END RSA PRIVATE KEY-----
+        source: ./worktracker-stage-front-auto-deploy.sh
+        target: /root/worktracker-stage-front-auto-deploy.sh
+
+    - name: Run deploy script on server
+      uses: appleboy/ssh-action@v0.1.0
+      with:
+        host: 95.217.209.152
+        username: root
+        key: |
+          -----BEGIN RSA PRIVATE KEY-----
+          MIIEowIBAAKCAQEAuJbmj1F9IXmXXd8XFzZ94y60JcvNzsrWDmI8J2zUC/9SScRR
+          cOLxYUB98xFK/jkpguXrn+2hnhqUWCkz+FuIdDAK6OVbRfJGmbsC/7CaqM3TVUxo
+          /OsKmvw4fn7oBd3GIwYmrz2M25CNMvqzphcyRKEoQUocfmSscVId1I/wgCQ+MlBV
+          9ab3OUAv6NW8OGXUOQ9BaB8DHlzuBFOqhG8GlQC4AEQZzLeoXCUq8m0s7fhab8Hh
+          PAIgDBSZpnqVQdC5riVVhAW/W5wql5rwSuqGYcwUst5NXWWkW+rwDdSQxPo6D7EK
+          o7XiMWtMLbZCkmq8g57YTtchuIR9Gs9ixWz19wIDAQABAoIBAHSWy1WmkLR+Cj8+
+          U2VUA7tkmmBtE7cTopQ/M+Nq95wETkNNfmsgzHkytNq8B3P/QtrswiCnhTdJbn0o
+          uSybE9rfJWToyPerCTC8UC6Tq3wHVP5BXuawxmgR+tTa704VP7qLfg+dfsSHzsdu
+          Vd4INLXoXHawisLCb7C7vx+tMqicJ7i2zRhkG0E0z7tnSVzXkmu4npNYWfSoQ6LR
+          qdeeh0sdZbcUVW7x/81IFzMuIkmh3Qzk7Zxfv7FSFhmdSix4VzZdUIhU8DlngAA/
+          lECrLbhqWrBv83wA+KHqUr6wue5s9a1M10vbZDnDkDYUJH25HN/Ja7EYg2QfnoFh
+          Lo+ICtECgYEA8EbWW+lTuhz5Ntx15+Cr6RlsAzuan9MkIObSKwa1bCM3CiE+zg+F
+          CY0qaX12/N/TwmHlo/C/GANaGjHNzV/54+IXHBKYR0XR9e3QrXsh8Ix7XyVinPpW
+          iNvRb5WFVQaoL1DhoSN5vWzzplRmyryuPmr74tlpsoMckVaGYSUXAosCgYEAxKst
+          8i++C/XlYEc4LqjvWC9W/ItkwJ+morhejTmei/mbXV8Dop96iockMEyq82MUXJeK
+          BRswDphrfRhbXqYRvO5gSWnfmzLL9z2Z/oiXZ2pGI6f2Cwbe1wIRCZLLcD4S4rFv
+          qRKt0E4fZUXYgAYjb4H3+Uo1iUDwnl47IPb9I8UCgYB9CN/TxH/Fgf5OBjt1Bv1u
+          t8P1irbUJNPQK02DBmKye0DRDKvaH0ljxwojCx84SGGx7a/KuCU5IcVpjDFEhoVL
+          iQPtn9+Od07jY3YMUN9AhlpNEO9YMQ2G+pzqLCzOKkCrHrPLXuKjKGdCTvmO1tD1
+          ukaJrgnK01+yYgxb0SlAMQKBgBoeofuIW7U68zvWOZ/4z9DmeKcR3E+45Gi4E9at
+          0GDGxdugwtrWU3ASgrvncszgW9PwTGRhOAC4PY5frcLkS3bMMf2OEiSKmow7ojgr
+          6+/QLYCOzh6oyu/DVn/u/xXpKJjy9+F8mZkQxxqsLBTUu+ATYtu4/2M7PLnLyg6W
+          vwgBAoGBALB5CN/eUHdrS0VybLQY/8SeYLaZDkZ5w8rtwcfF7PtK7oSfvy19xpaO
+          WgaD43fmBfZqfuQrboYs9Yc7ETaZ+mat1Z5Jk1S7EbooApAanpGWgGvEJ3vp2HWw
+          DQfsjvwm09m93cSYipDHbo/IdctHKc+Ta4sA+1rdZCd65Q1IEXma
+          -----END RSA PRIVATE KEY-----
+        script: /root/worktracker-stage-front-auto-deploy.sh
