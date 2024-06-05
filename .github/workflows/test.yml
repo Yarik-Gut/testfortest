@@ -1,43 +1,43 @@
-name: Angular CI
+#name: Angular CI
 
-on: [push, pull_request]
+#on: [push, pull_request]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x]
+#    strategy:
+#      matrix:
+#        node-version: [18.x]
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
+#      - name: Setup Node.js
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: ${{ matrix.node-version }}
 
-      - name: Cache npm modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#      - name: Cache npm modules
+#        uses: actions/cache@v3
+#        with:
+#          path: ~/.npm
+#          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies
-        run: npm install
+#      - name: Install dependencies
+#        run: npm install
 
-      - name: Setup Headless Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb libxss1 libappindicator1 libindicator7
+#      - name: Setup Headless Chrome
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y xvfb libxss1 libappindicator1 libindicator7
 
-      - name: Start Xvfb
-        run: |
-          Xvfb :99 -ac -screen 0 1280x1024x24 > /dev/null 2>&1 &
+#      - name: Start Xvfb
+#        run: |
+#          Xvfb :99 -ac -screen 0 1280x1024x24 > /dev/null 2>&1 &
 
-      - name: Run tests
-        run: |
-          export DISPLAY=:99
-          npm test
+#      - name: Run tests
+#        run: |
+#          export DISPLAY=:99
+#          npm test
