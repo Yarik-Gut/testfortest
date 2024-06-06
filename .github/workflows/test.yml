@@ -37,5 +37,9 @@ jobs:
         run: |
           Xvfb :99 -ac -screen 0 1280x1024x24 > /dev/null 2>&1 &
 
-      - name: Run Tests with Xvfb
-        run: xvfb-run npm test
+      - name: Ensure Xvfb is not already running
+        run: |
+          sudo pkill Xvfb
+          sleep 2
+          sudo Xvfb :99 -ac -screen 0 1280x1024x24 &
+          sleep 3  # Give Xvfb some time to start
