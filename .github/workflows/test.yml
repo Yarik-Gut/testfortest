@@ -33,13 +33,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y xvfb libxss1 libappindicator1 libindicator7
 
-      - name: Start Xvfb
-        run: |
-          Xvfb :99 -ac -screen 0 1280x1024x24 > /dev/null 2>&1 &
-
       - name: Ensure Xvfb is not already running
         run: |
-          sudo pkill Xvfb
-          sleep 2
-          sudo Xvfb :99 -ac -screen 0 1280x1024x24 &
-          sleep 3  # Give Xvfb some time to start
+          sudo pkill Xvfb || true  # Ensure any previous Xvfb process is terminated
+          sleep 2  # Give it some time to terminate
+
+      - name: Start Xvfb
+        run: |
+          sudo Xvfb :99 -ac -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          sleep 5  # Give Xvfb some time to start
+
+      - name: Run tests
+        env:
+          DISPLAY: :99
+        run: npm test
