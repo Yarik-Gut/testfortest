@@ -1,4 +1,3 @@
-
 name: Auto Deploy
 
 on:
@@ -22,25 +21,10 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Copy deploy script to server
-      uses: appleboy/scp-action@v0.1.0
-      with:
-        host: 95.217.209.152
-        username: root
-        key: |
-          -----BEGIN RSA PRIVATE KEY-----
-          
-          -----END RSA PRIVATE KEY-----
-        source: ./worktracker-stage-front-auto-deploy.sh
-        target: /root/worktracker-stage-front-auto-deploy.sh
-
     - name: Run deploy script on server
       uses: appleboy/ssh-action@v0.1.0
       with:
         host: 95.217.209.152
         username: root
-        key: |
-          -----BEGIN RSA PRIVATE KEY-----
-          
-          -----END RSA PRIVATE KEY-----
+        key: ${{ secrets.SERVER_SSH_KEY }}
         script: /root/worktracker-stage-front-auto-deploy.sh
