@@ -37,10 +37,6 @@ jobs:
         run: |
           Xvfb :99 -ac -screen 0 1280x1024x24 > /dev/null 2>&1 &
 
-      - name: Start Xvfb and Run Tests
+      - name: Run Tests with Xvfb
         run: |
-          sudo Xvfb :99 -ac -screen 0 1280x1024x24 > xvfb.log 2>&1 &
-          sleep 3  # Give Xvfb some time to start
-          cat xvfb.log
-          export DISPLAY=:99
-          npm test
+          xvfb-run --server-args="-screen 0 1280x1024x24" npm test
