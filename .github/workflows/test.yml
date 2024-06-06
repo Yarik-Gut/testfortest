@@ -39,7 +39,8 @@ jobs:
 
       - name: Start Xvfb and Run Tests
         run: |
-          sudo Xvfb :99 -ac -screen 0 1280x1024x24 &
+          sudo Xvfb :99 -ac -screen 0 1280x1024x24 > xvfb.log 2>&1 &
           sleep 3  # Give Xvfb some time to start
+          cat xvfb.log
           export DISPLAY=:99
           npm test
